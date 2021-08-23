@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Form, Row, Col, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const UrlForm = () => {
   return (
@@ -30,7 +31,9 @@ const UrlForm = () => {
             <Button variant="primary" className="mx-4">
               Update
             </Button>
-            <Button variant="danger">View URLs</Button>
+            <Link to="/urlslist">
+              <Button variant="danger">View URLs</Button>
+            </Link>
           </Form>
         </Col>
       </Row>
