@@ -28,37 +28,36 @@ public class URLController {
         return urlRepository.findAll();
     }
 
-    @GetMapping("/urls/{id}")
-    public ResponseEntity<URL> getURLById(@PathVariable(value = "id") String urlId) throws ResourceNotFoundException {
-        URL url = urlRepository.findById(urlId)
-            .orElseThrow(() -> new ResourceNotFoundException("URL not found for this Id : " + urlId));
+    @GetMapping("/urls/{name}")
+    public ResponseEntity<URL> getURLByName(@PathVariable(value = "name") String urlName) throws ResourceNotFoundException {
+        URL url = urlRepository.findById(urlName)
+            .orElseThrow(() -> new  ResourceNotFoundException());
 
         return ResponseEntity.ok(url);
     }
 
     @PostMapping("/urls")
-    public URL createURL(@Validated @RequestBody URL url) {
-        // url.setId(sequenceGeneratorService.generateSequence(URL.SEQUENCE_NAME))
-        return urlRepository.save(url);
+    public ResponseEntity<URL> createURL(@Validated @RequestBody URL url) {
+        // url.setId(sequenceGeneratorService.generateSequence(URL.SEQUENCE_Id))
+        return ResponseEntity.ok(urlRepository.save(url));
     }
 
-    @PutMapping("/urls/{id}")
-    public ResponseEntity<URL> updateURL(@PathVariable(value = "id") String urlId, @Validated @RequestBody URL newURL) 
-        throws ResourceNotFoundException{
-        URL oldURL = urlRepository.findById(newURL.getId())
-            .orElseThrow(() -> new ResourceNotFoundException("URL not found for this Id : " + urlId));
+    @PutMapping("/urls/{name}")
+    public ResponseEntity<URL> updateURL(@PathVariable("name") String urlName, @Validated @RequestBody URL newURL) 
+        throws ResourceNotFoundException {
+        URL oldURL = urlRepository.findById(newURL.getName())
+            .orElseThrow(() -> new ResourceNotFoundException());
 
         oldURL.setURL(newURL.getURL());
-        
         return ResponseEntity.ok(urlRepository.save(oldURL));
     }
 
-    @DeleteMapping("/urls/{id}")
-    public ResponseEntity<String> deleteURL(@PathVariable(value = "id") String urlId) throws ResourceNotFoundException {
-        URL url = urlRepository.findById(urlId)
-            .orElseThrow(() -> new ResourceNotFoundException("URL not found for this Id : " + urlId));
+    @DeleteMapping("/urls/{name}")
+    public ResponseEntity<String> deleteURL(@PathVariable("name") String urlName) throws ResourceNotFoundException {
+        URL url = urlRepository.findById(urlName)
+            .orElseThrow(() -> new ResourceNotFoundException());
 
         urlRepository.delete(url);
-        return ResponseEntity.ok("URL with Id : " + urlId + " deleted");
+        return ResponseEntity.ok("URL with Name : " + urlName + " deleted");
     }
 }
