@@ -1,40 +1,64 @@
-import React from "react";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { SET_URLS } from "../actions";
 
 const UrlList = () => {
+  const urlsData = useSelector((state) => state.urls);
+  const dispatch = useDispatch();
+
+  const handleUrlDelete = (competitorName) => {
+    const url = "http://localhost:8080/api/urls/" + competitorName;
+    axios
+      .delete(url)
+      .then((res) => {
+        console.log(res.data);
+        getUrlsData();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getUrlsData = () => {
+    const url = "http://localhost:8080/api/urls";
+
+    axios
+      .get(url)
+      .then((res) => {
+        dispatch(SET_URLS(res.data));
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getUrlsData();
+  }, []);
+
   return (
     <Container className="mt-4">
       <Row>
         <Col xs={{ span: 6, offset: 3 }}>
-          <ListGroup as="ul">
-            <ListGroup.Item as="li" active>
-              Competitor Name: Bootstrap
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              https://react-bootstrap.netlify.app/components/list-group/
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              https://react-bootstrap.netlify.app/components/breadcrumb/
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              https://react-bootstrap.netlify.app/components/accordion/
-            </ListGroup.Item>
-          </ListGroup>
-
-          <ListGroup as="ul" className="mt-4">
-            <ListGroup.Item as="li" active>
-              Competitor Name: Bootstrap
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              https://react-bootstrap.netlify.app/components/list-group/
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              https://react-bootstrap.netlify.app/components/breadcrumb/
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              https://react-bootstrap.netlify.app/components/accordion/
-            </ListGroup.Item>
-          </ListGroup>
+          {urlsData.map((data, index) => (
+            <ListGroup as="ul" key={index} className="mt-4">
+              <ListGroup.Item as="li">
+                Competitor Name: {data.name}
+                <Button
+                  style={{ float: "right" }}
+                  variant="danger"
+                  onClick={() => {
+                    handleUrlDelete(data.name);
+                  }}
+                >
+                  Delete
+                </Button>
+              </ListGroup.Item>
+              {data.url.map((url, index) => (
+                <ListGroup.Item as="li" key={index}>
+                  {url}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ))}
         </Col>
       </Row>
     </Container>
