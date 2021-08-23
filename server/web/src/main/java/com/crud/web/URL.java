@@ -1,33 +1,37 @@
 package com.crud.web;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 
 @Document(collection = "URL")
 public class URL {
     @Id
-    private String id;
-    private String url;
+    private String name;
+    private List<String> url;
 
     public URL() {}
 
-    public URL(String url) {
+    public URL(String name, List<String> url) {
+        this.name = name;
         this.url = url;
     }
 
-    public String getId() {
-        return id;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
-    public String getURL() {
+    public List<String> getURL() {
         return url;
     }
 
-    public void setURL(String url) {
+    public void setURL(List<String> url) {
         this.url = url;
     }
 }
